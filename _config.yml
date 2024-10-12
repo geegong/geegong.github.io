@@ -1,6 +1,23 @@
+title: WHAT
+email:
+description: >- # this means to ignore newlines until "baseurl:"
+  DESC
+github_username: geegong
+minimal_mistakes_skin: dark
+search: true
+
+# Build settings
+markdown: kramdown
 remote_theme: "mmistakes/minimal-mistakes@4.26.2"
-title: geegong test blog
-description: ongoing
+# Outputting
+permalink: /:categories/:title/
+paginate: 5 # amount of posts to show
+paginate_path: /page:num/
+timezone: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+
+include:
+  - _pages
+
 plugins:
   - jekyll-paginate
   - jekyll-sitemap
