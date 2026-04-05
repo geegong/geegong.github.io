@@ -17,7 +17,7 @@ minimal_mistakes_skin    : "dark" # "air", "aqua", "contrast", "dark", "dirt", "
 # Site Settings
 locale                   : "ko-KR"
 rtl                      : # true, false (default) # turns direction of the page into right to left for RTL languages
-title                    : "scribble scribble"
+title                    : "Just Scribbling"
 title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
 name                     : "JIA"
@@ -116,7 +116,7 @@ author:
   name             : "JIA"
   avatar           : "/assets/images/bio-photo.jpg" # place your avatar image at this path
   home             : "/resume/"
-  bio              : "I am an **amazing** person."
+  bio              : "I cherish every day."
   location         : "Somewhere"
   email            :
   links:
