@@ -1,0 +1,816 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ko-KR" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>BFS - Binary Tree Level Order Traversal - scribble scribble</title>
+<meta name="description" content="The Problem">
+
+
+  <meta name="author" content="JIA">
+  
+  <meta property="article:author" content="JIA">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="scribble scribble">
+<meta property="og:title" content="BFS - Binary Tree Level Order Traversal">
+<meta property="og:url" content="http://localhost:4000/dsa/BinaryTreeLevelOrderTraversal/">
+
+
+  <meta property="og:description" content="The Problem">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2026-03-27T00:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/dsa/BinaryTreeLevelOrderTraversal/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="scribble scribble Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          scribble scribble
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/"
+                
+                
+              >Quick-Start Guide</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/categories/dsa/"
+                
+                
+              >DSA</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">토글 메뉴</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/resume/">
+        <img src="/assets/images/bio-photo.jpg" alt="JIA" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/resume/" itemprop="url">JIA</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>I am an <strong>amazing</strong> person.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">팔로우</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Somewhere</span>
+        </li>
+      
+
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="BFS - Binary Tree Level Order Traversal">
+    <meta itemprop="description" content="The Problem">
+    <meta itemprop="datePublished" content="2026-03-27T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/dsa/BinaryTreeLevelOrderTraversal/" itemprop="url">BFS - Binary Tree Level Order Traversal
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-03-27T00:00:00+09:00">March 27, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 분 소요
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <h2 id="the-problem">The Problem</h2>
+
+<p><strong><a href="https://leetcode.com/problems/binary-tree-level-order-traversal">LeetCode 102 - Binary Tree Level Order Traversal</a></strong></p>
+
+<p>Given the root of a binary tree, return the node values <strong>level by level</strong> from left to right.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Input:
+        3
+       / \
+      9  20
+        /  \
+       15   7
+
+Output: [[3], [9, 20], [15, 7]]
+</code></pre></div></div>
+
+<p>Each inner list represents one level of the tree. The challenge is to visit nodes <strong>in the correct order</strong> and <strong>group them by depth</strong>.</p>
+
+<hr />
+
+<h2 id="what-is-bfs">What is BFS?</h2>
+
+<p><strong>BFS (Breadth-First Search)</strong> is a traversal algorithm that explores nodes <strong>level by level</strong> — visiting all neighbors at the current depth before moving deeper.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Tree:       3
+           / \
+          9  20
+            /  \
+           15   7
+
+BFS order:  3 → 9 → 20 → 15 → 7
+</code></pre></div></div>
+
+<p>Unlike DFS which dives deep first, BFS spreads wide — it processes every node at depth <code class="language-plaintext highlighter-rouge">d</code> before touching any node at depth <code class="language-plaintext highlighter-rouge">d+1</code>.</p>
+
+<p>The key data structure that makes this possible is a <strong>queue</strong> (FIFO). Every time you visit a node, you enqueue its children. When you dequeue a node, you’re guaranteed it’s the next one in level order.</p>
+
+<hr />
+
+<h2 id="why-bfs-fits-this-problem-perfectly">Why BFS fits this problem perfectly</h2>
+
+<p>This problem asks for nodes <strong>grouped by level</strong>. That’s exactly the pattern BFS produces naturally:</p>
+
+<ul>
+  <li>All depth-0 nodes first → <code class="language-plaintext highlighter-rouge">[3]</code></li>
+  <li>All depth-1 nodes next → <code class="language-plaintext highlighter-rouge">[9, 20]</code></li>
+  <li>All depth-2 nodes last → <code class="language-plaintext highlighter-rouge">[15, 7]</code></li>
+</ul>
+
+<p>The only extra step beyond plain BFS is capturing the <strong>size of the queue at the start of each level</strong>, so we know which nodes belong to the same group.</p>
+
+<hr />
+
+<h2 id="approaching-the-problem-step-by-step">Approaching the Problem Step by Step</h2>
+
+<h3 id="step-1--seed-the-queue-with-the-root">Step 1 — Seed the queue with the root</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Queue: [3]
+Result: []
+</code></pre></div></div>
+
+<h3 id="step-2--at-each-level-snapshot-the-queue-size">Step 2 — At each level, snapshot the queue size</h3>
+
+<p>When we enter a new level, the queue contains <strong>exactly the nodes at that level</strong> (and nothing else yet). We snapshot <code class="language-plaintext highlighter-rouge">size = queue.size()</code> and loop that many times — this isolates one level’s worth of work.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Level 0:  size = 1  →  dequeue 3, enqueue 9 and 20
+          currentLevel = [3]
+          Queue: [9, 20]
+          Result: [[3]]
+</code></pre></div></div>
+
+<h3 id="step-3--repeat-until-the-queue-is-empty">Step 3 — Repeat until the queue is empty</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Level 1:  size = 2  →  dequeue 9 (no children), dequeue 20 (enqueue 15, 7)
+          currentLevel = [9, 20]
+          Queue: [15, 7]
+          Result: [[3], [9, 20]]
+
+Level 2:  size = 2  →  dequeue 15, dequeue 7 (no children)
+          currentLevel = [15, 7]
+          Queue: []
+          Result: [[3], [9, 20], [15, 7]]
+</code></pre></div></div>
+
+<p>Queue is empty → done.</p>
+
+<hr />
+
+<h2 id="the-code">The Code</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;&gt;</span> <span class="nf">levelOrder</span><span class="o">(</span><span class="nc">TreeNode</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">List</span><span class="o">&lt;</span><span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+
+    <span class="nc">Queue</span><span class="o">&lt;</span><span class="nc">TreeNode</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LinkedList</span><span class="o">&lt;&gt;();</span>
+    <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">root</span><span class="o">);</span>
+
+    <span class="k">while</span> <span class="o">(!</span><span class="n">queue</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">size</span><span class="o">();</span>           <span class="c1">// snapshot: nodes at this level</span>
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">currentLevel</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="nc">TreeNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+            <span class="n">currentLevel</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">val</span><span class="o">);</span>
+
+            <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">left</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>  <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">right</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">currentLevel</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="why-linkedlist-for-the-queue">Why <code class="language-plaintext highlighter-rouge">LinkedList</code> for the queue?</h3>
+
+<p>In Java, <code class="language-plaintext highlighter-rouge">Queue</code> is an interface — you can’t instantiate it directly. You need a concrete class that implements it. <code class="language-plaintext highlighter-rouge">LinkedList</code> is the most common choice because:</p>
+
+<ul>
+  <li>It implements both <code class="language-plaintext highlighter-rouge">Queue</code> and <code class="language-plaintext highlighter-rouge">Deque</code>, giving you <code class="language-plaintext highlighter-rouge">offer()</code>, <code class="language-plaintext highlighter-rouge">poll()</code>, and <code class="language-plaintext highlighter-rouge">peek()</code> out of the box.</li>
+  <li>Insertions and removals at both ends are <strong>O(1)</strong> — exactly what a queue needs.</li>
+  <li><code class="language-plaintext highlighter-rouge">ArrayDeque</code> is another valid option and is slightly faster in practice (no node allocation overhead), but <code class="language-plaintext highlighter-rouge">LinkedList</code> is more commonly seen in interview solutions.</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Queue&lt;TreeNode&gt; queue = new LinkedList&lt;&gt;();
+//    ↑ interface     ↑ concrete implementation
+</code></pre></div></div>
+
+<p>This is the standard Java pattern: program to the interface (<code class="language-plaintext highlighter-rouge">Queue</code>), instantiate with the implementation (<code class="language-plaintext highlighter-rouge">LinkedList</code>).</p>
+
+<h3 id="why-size--queuesize-is-the-key-line">Why <code class="language-plaintext highlighter-rouge">size = queue.size()</code> is the key line</h3>
+
+<p>Without snapshotting the size, you’d mix nodes from different levels into the same group as the queue grows during iteration. The snapshot freezes the boundary: “these <code class="language-plaintext highlighter-rouge">size</code> nodes belong to the current level — everything enqueued after belongs to the next.”</p>
+
+<hr />
+
+<h2 id="complexity">Complexity</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Time</td>
+      <td>O(n) — every node is enqueued and dequeued exactly once</td>
+    </tr>
+    <tr>
+      <td>Space</td>
+      <td>O(n) — the queue holds at most the widest level of the tree</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<ul>
+  <li><strong>BFS</strong> explores a tree level by level using a queue.</li>
+  <li>The trick for grouping nodes by level is to <strong>snapshot <code class="language-plaintext highlighter-rouge">queue.size()</code> at the start of each iteration</strong> — this acts as a boundary between levels.</li>
+  <li>This pattern generalizes to many BFS problems: shortest path in a grid, word ladder, zigzag traversal, and more.</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> 태그: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#algorithms" class="page__taxonomy-item p-category" rel="tag">Algorithms</a><span class="sep">, </span>
+    
+      <a href="/tags/#bfs" class="page__taxonomy-item p-category" rel="tag">BFS</a><span class="sep">, </span>
+    
+      <a href="/tags/#queue" class="page__taxonomy-item p-category" rel="tag">Queue</a><span class="sep">, </span>
+    
+      <a href="/tags/#tree" class="page__taxonomy-item p-category" rel="tag">Tree</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> 카테고리: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/categories/#dsa" class="page__taxonomy-item p-category" rel="tag">DSA</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="2026-03-27T00:00:00+09:00">March 27, 2026</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">공유하기</h4>
+
+  <a href="https://twitter.com/intent/tweet?text=BFS+-+Binary+Tree+Level+Order+Traversal%20http%3A%2F%2Flocalhost%3A4000%2Fdsa%2FBinaryTreeLevelOrderTraversal%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="공유하기 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fdsa%2FBinaryTreeLevelOrderTraversal%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="공유하기 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://localhost:4000/dsa/BinaryTreeLevelOrderTraversal/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="공유하기 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/dsa/PostOrderDFS/" class="pagination--pager" title="Post-order DFS - Alien Dictionary
+">이전</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">다음</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">참고</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/dsa/PostOrderDFS/" rel="permalink">Post-order DFS - Alien Dictionary
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-03-22T00:00:00+09:00">March 22, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          5 분 소요
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">What is DFS?
+
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/dsa/BitOperation/" rel="permalink">Bit Operation
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-07T00:00:00+09:00">January 7, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 분 소요
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Bit Operation
+
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/dsa/Kadane'sAlgorithms/" rel="permalink">Kadane’s Algorithms
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-06T00:00:00+09:00">January 6, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          최대 1 분 소요
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kadane’s Algorithms (for subArray)
+
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/dsa/LongestCommonSubsequence/" rel="permalink">Longest Common Subsequence
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          최대 1 분 소요
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">LCS (Longest Common Subsequence)
+
+</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>팔로우:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> 피드</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2026 <a href="http://localhost:4000">scribble scribble</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

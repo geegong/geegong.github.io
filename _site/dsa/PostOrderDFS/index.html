@@ -1,0 +1,891 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ko-KR" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Post-order DFS - Alien Dictionary - scribble scribble</title>
+<meta name="description" content="What is DFS?">
+
+
+  <meta name="author" content="JIA">
+  
+  <meta property="article:author" content="JIA">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="scribble scribble">
+<meta property="og:title" content="Post-order DFS - Alien Dictionary">
+<meta property="og:url" content="http://localhost:4000/dsa/PostOrderDFS/">
+
+
+  <meta property="og:description" content="What is DFS?">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2026-03-22T00:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/dsa/PostOrderDFS/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="scribble scribble Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          scribble scribble
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/"
+                
+                
+              >Quick-Start Guide</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/categories/dsa/"
+                
+                
+              >DSA</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">토글 메뉴</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/resume/">
+        <img src="/assets/images/bio-photo.jpg" alt="JIA" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/resume/" itemprop="url">JIA</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>I am an <strong>amazing</strong> person.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">팔로우</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Somewhere</span>
+        </li>
+      
+
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Post-order DFS - Alien Dictionary">
+    <meta itemprop="description" content="What is DFS?">
+    <meta itemprop="datePublished" content="2026-03-22T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/dsa/PostOrderDFS/" itemprop="url">Post-order DFS - Alien Dictionary
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-03-22T00:00:00+09:00">March 22, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          5 분 소요
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <h2 id="what-is-dfs">What is DFS?</h2>
+
+<p><strong>DFS (Depth-First Search)</strong> is a graph/tree traversal algorithm that explores as far as possible along each branch before backtracking.</p>
+
+<p>Starting from a node, DFS keeps going deeper into neighbors until it hits a dead end, then backtracks and explores the next unvisited neighbor.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Graph:  A → B → D
+            ↓
+            C → E
+
+DFS from A: A → B → D (backtrack) → C → E
+</code></pre></div></div>
+
+<p>There are three ways to visit nodes during DFS depending on <strong>when you process the current node</strong>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Order</th>
+      <th>When to process</th>
+      <th>Use case</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pre-order</td>
+      <td>Before visiting children</td>
+      <td>Copy a tree, prefix expressions</td>
+    </tr>
+    <tr>
+      <td>In-order</td>
+      <td>Between left and right child</td>
+      <td>BST sorted output</td>
+    </tr>
+    <tr>
+      <td><strong>Post-order</strong></td>
+      <td><strong>After visiting all children</strong></td>
+      <td><strong>Topological sort, dependency resolution</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="related-problems-by-dfs-order">Related Problems by DFS Order</h2>
+
+<h3 id="pre-order--copy-a-tree-prefix-expressions">Pre-order — “Copy a tree, prefix expressions”</h3>
+
+<ul>
+  <li>
+    <p><strong><a href="https://leetcode.com/problems/binary-tree-preorder-traversal/">LeetCode 144 - Binary Tree Preorder Traversal</a></strong>
+Classic pre-order traversal: process the node before visiting its children.</p>
+  </li>
+  <li>
+    <p><strong><a href="https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/">LeetCode 105 - Construct Binary Tree from Preorder and Inorder Traversal</a></strong>
+Uses the fact that the first element of a pre-order sequence is always the root.</p>
+  </li>
+</ul>
+
+<h3 id="in-order--bst-sorted-output">In-order — “BST sorted output”</h3>
+
+<ul>
+  <li>
+    <p><strong><a href="https://leetcode.com/problems/validate-binary-search-tree/">LeetCode 98 - Validate Binary Search Tree</a></strong>
+In-order traversal of a valid BST must produce a strictly increasing sequence.</p>
+  </li>
+  <li>
+    <p><strong><a href="https://leetcode.com/problems/kth-smallest-element-in-a-bst/">LeetCode 230 - Kth Smallest Element in a BST</a></strong>
+In-order traversal visits BST nodes in sorted order — the k-th visited node is the answer.</p>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="post-order-dfs">Post-order DFS</h2>
+
+<p>In <strong>Post-order DFS</strong>, a node is processed only <strong>after all of its descendants have been fully visited</strong>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Tree:     A
+         / \
+        B   C
+       / \
+      D   E
+
+Post-order traversal: D → E → B → C → A
+</code></pre></div></div>
+
+<p>The key idea: <strong>a node is added to the result only when there is nothing left to explore from it.</strong></p>
+
+<p>This naturally encodes a “dependency finished” signal — you record a node only after everything it depends on is already recorded.</p>
+
+<hr />
+
+<h2 id="what-is-topological-sort">What is Topological Sort?</h2>
+
+<p><strong>Topological sort</strong> is an ordering of nodes in a <strong>directed acyclic graph (DAG)</strong> such that for every directed edge <code class="language-plaintext highlighter-rouge">u → v</code>, node <code class="language-plaintext highlighter-rouge">u</code> appears before node <code class="language-plaintext highlighter-rouge">v</code> in the ordering.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Graph:  A → C
+        ↓   ↓
+        B → D
+
+Valid topological order: A → B → C → D
+                      or A → C → B → D
+</code></pre></div></div>
+
+<p>Think of it as scheduling tasks with dependencies — you can’t start a task until all tasks it depends on are finished.</p>
+
+<h3 id="key-constraints">Key constraints</h3>
+
+<ul>
+  <li>The graph must be <strong>directed</strong> (edges have a direction).</li>
+  <li>The graph must be <strong>acyclic</strong> — if there’s a cycle, no valid ordering exists.</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Cycle:  A → B → C → A   ← impossible to order!
+</code></pre></div></div>
+
+<h3 id="why-does-alien-dictionary-require-topological-sort">Why does Alien Dictionary require topological sort?</h3>
+
+<p>The alien dictionary gives us a set of <strong>“must come before”</strong> rules between characters. For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>t → f  means: t must appear before f in the alien alphabet
+w → e  means: w must appear before e
+</code></pre></div></div>
+
+<p>These rules form a directed graph. Finding the alien alphabet order = finding a valid topological order of that graph.</p>
+
+<ul>
+  <li>If the rules are consistent (no cycles) → a valid alien alphabet exists.</li>
+  <li>If there’s a cycle (e.g., <code class="language-plaintext highlighter-rouge">a → b → a</code>) → the input is invalid, return <code class="language-plaintext highlighter-rouge">""</code>.</li>
+</ul>
+
+<p>This is exactly what topological sort solves.</p>
+
+<hr />
+
+<h2 id="why-post-order-dfs-is-perfect-for-alien-dictionary">Why Post-order DFS is perfect for Alien Dictionary</h2>
+
+<h3 id="the-problem">The Problem</h3>
+
+<p>Given a list of words sorted in an alien language’s lexicographic order, find the character ordering of that language.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Input:  ["wrt", "wrf", "er", "ett", "rftt"]
+Output: "wertf"
+</code></pre></div></div>
+
+<h3 id="building-the-graph">Building the Graph</h3>
+
+<p>By comparing adjacent words, we can extract ordering rules between characters:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"wrt" vs "wrf"  →  t comes before f  (t → f)
+"wrf" vs "er"   →  w comes before e  (w → e)
+"er"  vs "ett"  →  r comes before t  (r → t)
+"ett" vs "rftt" →  e comes before r  (e → r)
+</code></pre></div></div>
+
+<p>This gives us a <strong>directed graph</strong> where an edge <code class="language-plaintext highlighter-rouge">u → v</code> means character <code class="language-plaintext highlighter-rouge">u</code> must come before <code class="language-plaintext highlighter-rouge">v</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>w → e → r → t → f
+</code></pre></div></div>
+
+<h3 id="why-post-order-dfs">Why Post-order DFS?</h3>
+
+<p>We need a <strong>topological ordering</strong> — an order where every node appears before the nodes it points to.</p>
+
+<p>Post-order DFS gives us exactly this, in reverse:</p>
+
+<ul>
+  <li>When we finish DFS on a node, all nodes reachable from it have already been visited and added to the result.</li>
+  <li>So the node we just finished must come <strong>before</strong> all of them in the final order.</li>
+  <li>Reversing the post-order result gives a valid topological sort.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">Character</span><span class="o">,</span> <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">Character</span><span class="o">&gt;&gt;</span> <span class="n">adj</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">Character</span><span class="o">,</span> <span class="nc">Boolean</span><span class="o">&gt;</span> <span class="n">visited</span><span class="o">;</span> <span class="c1">// true = visiting, false = visited</span>
+    <span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Character</span><span class="o">&gt;</span> <span class="n">result</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">alienOrder</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">words</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
+        <span class="n">visited</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+
+        <span class="c1">// Initialize adjacency list with all unique characters</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">word</span> <span class="o">:</span> <span class="n">words</span><span class="o">)</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">c</span> <span class="o">:</span> <span class="n">word</span><span class="o">.</span><span class="na">toCharArray</span><span class="o">())</span>
+                <span class="n">adj</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="k">new</span> <span class="nc">HashSet</span><span class="o">&lt;&gt;());</span>
+
+        <span class="c1">// Build graph by comparing adjacent words</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">words</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="nc">String</span> <span class="n">w1</span> <span class="o">=</span> <span class="n">words</span><span class="o">[</span><span class="n">i</span><span class="o">],</span> <span class="n">w2</span> <span class="o">=</span> <span class="n">words</span><span class="o">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">];</span>
+            <span class="kt">int</span> <span class="n">minLen</span> <span class="o">=</span> <span class="nc">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="n">w1</span><span class="o">.</span><span class="na">length</span><span class="o">(),</span> <span class="n">w2</span><span class="o">.</span><span class="na">length</span><span class="o">());</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">w1</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="n">w2</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">w1</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">minLen</span><span class="o">).</span><span class="na">equals</span><span class="o">(</span><span class="n">w2</span><span class="o">))</span>
+                <span class="k">return</span> <span class="s">""</span><span class="o">;</span> <span class="c1">// invalid order</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">minLen</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">w1</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">j</span><span class="o">)</span> <span class="o">!=</span> <span class="n">w2</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">j</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="n">adj</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">w1</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">j</span><span class="o">)).</span><span class="na">add</span><span class="o">(</span><span class="n">w2</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">j</span><span class="o">));</span>
+                    <span class="k">break</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="c1">// Post-order DFS on every node</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">c</span> <span class="o">:</span> <span class="n">adj</span><span class="o">.</span><span class="na">keySet</span><span class="o">())</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">dfs</span><span class="o">(</span><span class="n">c</span><span class="o">))</span> <span class="k">return</span> <span class="s">""</span><span class="o">;</span> <span class="c1">// cycle detected</span>
+
+        <span class="nc">Collections</span><span class="o">.</span><span class="na">reverse</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+        <span class="nc">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">c</span> <span class="o">:</span> <span class="n">result</span><span class="o">)</span> <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">dfs</span><span class="o">(</span><span class="kt">char</span> <span class="n">c</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">visited</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">c</span><span class="o">))</span>
+            <span class="k">return</span> <span class="n">visited</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">c</span><span class="o">);</span> <span class="c1">// true = cycle detected</span>
+
+        <span class="n">visited</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span> <span class="c1">// mark as visiting</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">neighbor</span> <span class="o">:</span> <span class="n">adj</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">c</span><span class="o">))</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">dfs</span><span class="o">(</span><span class="n">neighbor</span><span class="o">))</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+
+        <span class="n">visited</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>  <span class="c1">// mark as visited</span>
+        <span class="n">result</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>          <span class="c1">// post-order: add after all children done</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="why-not-pre-order">Why not Pre-order?</h3>
+
+<p>In pre-order, we add a node <strong>before</strong> exploring its neighbors. But at that point, we don’t yet know if any of its descendants form a cycle, and we haven’t confirmed all dependencies are resolved. Post-order guarantees that by the time we record a node, the full subtree beneath it is clean and complete.</p>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<ul>
+  <li><strong>DFS</strong> explores depth-first, backtracking when stuck.</li>
+  <li><strong>Post-order DFS</strong> records a node only after all its dependencies are resolved.</li>
+  <li>In the <strong>Alien Dictionary</strong> problem, post-order DFS on the character graph gives a reverse topological order — reversing it yields the valid alien alphabet.</li>
+</ul>
+
+<hr />
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> 태그: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#algorithms" class="page__taxonomy-item p-category" rel="tag">Algorithms</a><span class="sep">, </span>
+    
+      <a href="/tags/#dfs" class="page__taxonomy-item p-category" rel="tag">DFS</a><span class="sep">, </span>
+    
+      <a href="/tags/#graph" class="page__taxonomy-item p-category" rel="tag">Graph</a><span class="sep">, </span>
+    
+      <a href="/tags/#topological-sort" class="page__taxonomy-item p-category" rel="tag">Topological Sort</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> 카테고리: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/categories/#dsa" class="page__taxonomy-item p-category" rel="tag">DSA</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="2026-03-22T00:00:00+09:00">March 22, 2026</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">공유하기</h4>
+
+  <a href="https://twitter.com/intent/tweet?text=Post-order+DFS+-+Alien+Dictionary%20http%3A%2F%2Flocalhost%3A4000%2Fdsa%2FPostOrderDFS%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="공유하기 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fdsa%2FPostOrderDFS%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="공유하기 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://localhost:4000/dsa/PostOrderDFS/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="공유하기 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/dsa/BitOperation/" class="pagination--pager" title="Bit Operation
+">이전</a>
+    
+    
+      <a href="/dsa/BinaryTreeLevelOrderTraversal/" class="pagination--pager" title="BFS - Binary Tree Level Order Traversal
+">다음</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">참고</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/dsa/BinaryTreeLevelOrderTraversal/" rel="permalink">BFS - Binary Tree Level Order Traversal
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-03-27T00:00:00+09:00">March 27, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          3 분 소요
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">The Problem
+
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/dsa/BitOperation/" rel="permalink">Bit Operation
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-07T00:00:00+09:00">January 7, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 분 소요
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Bit Operation
+
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/dsa/Kadane'sAlgorithms/" rel="permalink">Kadane’s Algorithms
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-06T00:00:00+09:00">January 6, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          최대 1 분 소요
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kadane’s Algorithms (for subArray)
+
+</p>
+  </article>
+</div>
+
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/dsa/LongestCommonSubsequence/" rel="permalink">Longest Common Subsequence
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2026-01-04T00:00:00+09:00">January 4, 2026</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          최대 1 분 소요
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">LCS (Longest Common Subsequence)
+
+</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>팔로우:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> 피드</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2026 <a href="http://localhost:4000">scribble scribble</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

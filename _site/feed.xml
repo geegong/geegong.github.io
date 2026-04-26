@@ -1,3 +1,578 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-10-15T00:30:10+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">scribble scribble</title><subtitle>typing spontaneously</subtitle><author><name>JIA</name></author><entry><title type="html">Firstpost</title><link href="http://localhost:4000/firstPost/" rel="alternate" type="text/html" title="Firstpost" /><published>2024-10-15T00:00:00+09:00</published><updated>2024-10-15T00:00:00+09:00</updated><id>http://localhost:4000/firstPost</id><content type="html" xml:base="http://localhost:4000/firstPost/"><![CDATA[<h2 id="first-post">FIRST POST</h2>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2026-03-31T01:08:58+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">scribble scribble</title><subtitle>typing spontaneously</subtitle><author><name>JIA</name></author><entry><title type="html">BFS - Binary Tree Level Order Traversal</title><link href="http://localhost:4000/dsa/BinaryTreeLevelOrderTraversal/" rel="alternate" type="text/html" title="BFS - Binary Tree Level Order Traversal" /><published>2026-03-27T00:00:00+09:00</published><updated>2026-03-27T00:00:00+09:00</updated><id>http://localhost:4000/dsa/BinaryTreeLevelOrderTraversal</id><content type="html" xml:base="http://localhost:4000/dsa/BinaryTreeLevelOrderTraversal/"><![CDATA[<h2 id="the-problem">The Problem</h2>
 
-<p>what will be happened?</p>]]></content><author><name>JIA</name></author><summary type="html"><![CDATA[FIRST POST]]></summary></entry></feed>
+<p><strong><a href="https://leetcode.com/problems/binary-tree-level-order-traversal">LeetCode 102 - Binary Tree Level Order Traversal</a></strong></p>
+
+<p>Given the root of a binary tree, return the node values <strong>level by level</strong> from left to right.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Input:
+        3
+       / \
+      9  20
+        /  \
+       15   7
+
+Output: [[3], [9, 20], [15, 7]]
+</code></pre></div></div>
+
+<p>Each inner list represents one level of the tree. The challenge is to visit nodes <strong>in the correct order</strong> and <strong>group them by depth</strong>.</p>
+
+<hr />
+
+<h2 id="what-is-bfs">What is BFS?</h2>
+
+<p><strong>BFS (Breadth-First Search)</strong> is a traversal algorithm that explores nodes <strong>level by level</strong> — visiting all neighbors at the current depth before moving deeper.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Tree:       3
+           / \
+          9  20
+            /  \
+           15   7
+
+BFS order:  3 → 9 → 20 → 15 → 7
+</code></pre></div></div>
+
+<p>Unlike DFS which dives deep first, BFS spreads wide — it processes every node at depth <code class="language-plaintext highlighter-rouge">d</code> before touching any node at depth <code class="language-plaintext highlighter-rouge">d+1</code>.</p>
+
+<p>The key data structure that makes this possible is a <strong>queue</strong> (FIFO). Every time you visit a node, you enqueue its children. When you dequeue a node, you’re guaranteed it’s the next one in level order.</p>
+
+<hr />
+
+<h2 id="why-bfs-fits-this-problem-perfectly">Why BFS fits this problem perfectly</h2>
+
+<p>This problem asks for nodes <strong>grouped by level</strong>. That’s exactly the pattern BFS produces naturally:</p>
+
+<ul>
+  <li>All depth-0 nodes first → <code class="language-plaintext highlighter-rouge">[3]</code></li>
+  <li>All depth-1 nodes next → <code class="language-plaintext highlighter-rouge">[9, 20]</code></li>
+  <li>All depth-2 nodes last → <code class="language-plaintext highlighter-rouge">[15, 7]</code></li>
+</ul>
+
+<p>The only extra step beyond plain BFS is capturing the <strong>size of the queue at the start of each level</strong>, so we know which nodes belong to the same group.</p>
+
+<hr />
+
+<h2 id="approaching-the-problem-step-by-step">Approaching the Problem Step by Step</h2>
+
+<h3 id="step-1--seed-the-queue-with-the-root">Step 1 — Seed the queue with the root</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Queue: [3]
+Result: []
+</code></pre></div></div>
+
+<h3 id="step-2--at-each-level-snapshot-the-queue-size">Step 2 — At each level, snapshot the queue size</h3>
+
+<p>When we enter a new level, the queue contains <strong>exactly the nodes at that level</strong> (and nothing else yet). We snapshot <code class="language-plaintext highlighter-rouge">size = queue.size()</code> and loop that many times — this isolates one level’s worth of work.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Level 0:  size = 1  →  dequeue 3, enqueue 9 and 20
+          currentLevel = [3]
+          Queue: [9, 20]
+          Result: [[3]]
+</code></pre></div></div>
+
+<h3 id="step-3--repeat-until-the-queue-is-empty">Step 3 — Repeat until the queue is empty</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Level 1:  size = 2  →  dequeue 9 (no children), dequeue 20 (enqueue 15, 7)
+          currentLevel = [9, 20]
+          Queue: [15, 7]
+          Result: [[3], [9, 20]]
+
+Level 2:  size = 2  →  dequeue 15, dequeue 7 (no children)
+          currentLevel = [15, 7]
+          Queue: []
+          Result: [[3], [9, 20], [15, 7]]
+</code></pre></div></div>
+
+<p>Queue is empty → done.</p>
+
+<hr />
+
+<h2 id="the-code">The Code</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;&gt;</span> <span class="nf">levelOrder</span><span class="o">(</span><span class="nc">TreeNode</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">List</span><span class="o">&lt;</span><span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+
+    <span class="nc">Queue</span><span class="o">&lt;</span><span class="nc">TreeNode</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LinkedList</span><span class="o">&lt;&gt;();</span>
+    <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">root</span><span class="o">);</span>
+
+    <span class="k">while</span> <span class="o">(!</span><span class="n">queue</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">size</span><span class="o">();</span>           <span class="c1">// snapshot: nodes at this level</span>
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">currentLevel</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="nc">TreeNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+            <span class="n">currentLevel</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">val</span><span class="o">);</span>
+
+            <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">left</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>  <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">right</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">currentLevel</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="why-linkedlist-for-the-queue">Why <code class="language-plaintext highlighter-rouge">LinkedList</code> for the queue?</h3>
+
+<p>In Java, <code class="language-plaintext highlighter-rouge">Queue</code> is an interface — you can’t instantiate it directly. You need a concrete class that implements it. <code class="language-plaintext highlighter-rouge">LinkedList</code> is the most common choice because:</p>
+
+<ul>
+  <li>It implements both <code class="language-plaintext highlighter-rouge">Queue</code> and <code class="language-plaintext highlighter-rouge">Deque</code>, giving you <code class="language-plaintext highlighter-rouge">offer()</code>, <code class="language-plaintext highlighter-rouge">poll()</code>, and <code class="language-plaintext highlighter-rouge">peek()</code> out of the box.</li>
+  <li>Insertions and removals at both ends are <strong>O(1)</strong> — exactly what a queue needs.</li>
+  <li><code class="language-plaintext highlighter-rouge">ArrayDeque</code> is another valid option and is slightly faster in practice (no node allocation overhead), but <code class="language-plaintext highlighter-rouge">LinkedList</code> is more commonly seen in interview solutions.</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Queue&lt;TreeNode&gt; queue = new LinkedList&lt;&gt;();
+//    ↑ interface     ↑ concrete implementation
+</code></pre></div></div>
+
+<p>This is the standard Java pattern: program to the interface (<code class="language-plaintext highlighter-rouge">Queue</code>), instantiate with the implementation (<code class="language-plaintext highlighter-rouge">LinkedList</code>).</p>
+
+<h3 id="why-size--queuesize-is-the-key-line">Why <code class="language-plaintext highlighter-rouge">size = queue.size()</code> is the key line</h3>
+
+<p>Without snapshotting the size, you’d mix nodes from different levels into the same group as the queue grows during iteration. The snapshot freezes the boundary: “these <code class="language-plaintext highlighter-rouge">size</code> nodes belong to the current level — everything enqueued after belongs to the next.”</p>
+
+<hr />
+
+<h2 id="complexity">Complexity</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Time</td>
+      <td>O(n) — every node is enqueued and dequeued exactly once</td>
+    </tr>
+    <tr>
+      <td>Space</td>
+      <td>O(n) — the queue holds at most the widest level of the tree</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<ul>
+  <li><strong>BFS</strong> explores a tree level by level using a queue.</li>
+  <li>The trick for grouping nodes by level is to <strong>snapshot <code class="language-plaintext highlighter-rouge">queue.size()</code> at the start of each iteration</strong> — this acts as a boundary between levels.</li>
+  <li>This pattern generalizes to many BFS problems: shortest path in a grid, word ladder, zigzag traversal, and more.</li>
+</ul>]]></content><author><name>JIA</name></author><category term="DSA" /><category term="Algorithms" /><category term="BFS" /><category term="Tree" /><category term="Queue" /><summary type="html"><![CDATA[The Problem]]></summary></entry><entry><title type="html">Post-order DFS - Alien Dictionary</title><link href="http://localhost:4000/dsa/PostOrderDFS/" rel="alternate" type="text/html" title="Post-order DFS - Alien Dictionary" /><published>2026-03-22T00:00:00+09:00</published><updated>2026-03-22T00:00:00+09:00</updated><id>http://localhost:4000/dsa/PostOrderDFS</id><content type="html" xml:base="http://localhost:4000/dsa/PostOrderDFS/"><![CDATA[<h2 id="what-is-dfs">What is DFS?</h2>
+
+<p><strong>DFS (Depth-First Search)</strong> is a graph/tree traversal algorithm that explores as far as possible along each branch before backtracking.</p>
+
+<p>Starting from a node, DFS keeps going deeper into neighbors until it hits a dead end, then backtracks and explores the next unvisited neighbor.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Graph:  A → B → D
+            ↓
+            C → E
+
+DFS from A: A → B → D (backtrack) → C → E
+</code></pre></div></div>
+
+<p>There are three ways to visit nodes during DFS depending on <strong>when you process the current node</strong>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Order</th>
+      <th>When to process</th>
+      <th>Use case</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pre-order</td>
+      <td>Before visiting children</td>
+      <td>Copy a tree, prefix expressions</td>
+    </tr>
+    <tr>
+      <td>In-order</td>
+      <td>Between left and right child</td>
+      <td>BST sorted output</td>
+    </tr>
+    <tr>
+      <td><strong>Post-order</strong></td>
+      <td><strong>After visiting all children</strong></td>
+      <td><strong>Topological sort, dependency resolution</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="related-problems-by-dfs-order">Related Problems by DFS Order</h2>
+
+<h3 id="pre-order--copy-a-tree-prefix-expressions">Pre-order — “Copy a tree, prefix expressions”</h3>
+
+<ul>
+  <li>
+    <p><strong><a href="https://leetcode.com/problems/binary-tree-preorder-traversal/">LeetCode 144 - Binary Tree Preorder Traversal</a></strong>
+Classic pre-order traversal: process the node before visiting its children.</p>
+  </li>
+  <li>
+    <p><strong><a href="https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/">LeetCode 105 - Construct Binary Tree from Preorder and Inorder Traversal</a></strong>
+Uses the fact that the first element of a pre-order sequence is always the root.</p>
+  </li>
+</ul>
+
+<h3 id="in-order--bst-sorted-output">In-order — “BST sorted output”</h3>
+
+<ul>
+  <li>
+    <p><strong><a href="https://leetcode.com/problems/validate-binary-search-tree/">LeetCode 98 - Validate Binary Search Tree</a></strong>
+In-order traversal of a valid BST must produce a strictly increasing sequence.</p>
+  </li>
+  <li>
+    <p><strong><a href="https://leetcode.com/problems/kth-smallest-element-in-a-bst/">LeetCode 230 - Kth Smallest Element in a BST</a></strong>
+In-order traversal visits BST nodes in sorted order — the k-th visited node is the answer.</p>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="post-order-dfs">Post-order DFS</h2>
+
+<p>In <strong>Post-order DFS</strong>, a node is processed only <strong>after all of its descendants have been fully visited</strong>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Tree:     A
+         / \
+        B   C
+       / \
+      D   E
+
+Post-order traversal: D → E → B → C → A
+</code></pre></div></div>
+
+<p>The key idea: <strong>a node is added to the result only when there is nothing left to explore from it.</strong></p>
+
+<p>This naturally encodes a “dependency finished” signal — you record a node only after everything it depends on is already recorded.</p>
+
+<hr />
+
+<h2 id="what-is-topological-sort">What is Topological Sort?</h2>
+
+<p><strong>Topological sort</strong> is an ordering of nodes in a <strong>directed acyclic graph (DAG)</strong> such that for every directed edge <code class="language-plaintext highlighter-rouge">u → v</code>, node <code class="language-plaintext highlighter-rouge">u</code> appears before node <code class="language-plaintext highlighter-rouge">v</code> in the ordering.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Graph:  A → C
+        ↓   ↓
+        B → D
+
+Valid topological order: A → B → C → D
+                      or A → C → B → D
+</code></pre></div></div>
+
+<p>Think of it as scheduling tasks with dependencies — you can’t start a task until all tasks it depends on are finished.</p>
+
+<h3 id="key-constraints">Key constraints</h3>
+
+<ul>
+  <li>The graph must be <strong>directed</strong> (edges have a direction).</li>
+  <li>The graph must be <strong>acyclic</strong> — if there’s a cycle, no valid ordering exists.</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Cycle:  A → B → C → A   ← impossible to order!
+</code></pre></div></div>
+
+<h3 id="why-does-alien-dictionary-require-topological-sort">Why does Alien Dictionary require topological sort?</h3>
+
+<p>The alien dictionary gives us a set of <strong>“must come before”</strong> rules between characters. For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>t → f  means: t must appear before f in the alien alphabet
+w → e  means: w must appear before e
+</code></pre></div></div>
+
+<p>These rules form a directed graph. Finding the alien alphabet order = finding a valid topological order of that graph.</p>
+
+<ul>
+  <li>If the rules are consistent (no cycles) → a valid alien alphabet exists.</li>
+  <li>If there’s a cycle (e.g., <code class="language-plaintext highlighter-rouge">a → b → a</code>) → the input is invalid, return <code class="language-plaintext highlighter-rouge">""</code>.</li>
+</ul>
+
+<p>This is exactly what topological sort solves.</p>
+
+<hr />
+
+<h2 id="why-post-order-dfs-is-perfect-for-alien-dictionary">Why Post-order DFS is perfect for Alien Dictionary</h2>
+
+<h3 id="the-problem">The Problem</h3>
+
+<p>Given a list of words sorted in an alien language’s lexicographic order, find the character ordering of that language.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Input:  ["wrt", "wrf", "er", "ett", "rftt"]
+Output: "wertf"
+</code></pre></div></div>
+
+<h3 id="building-the-graph">Building the Graph</h3>
+
+<p>By comparing adjacent words, we can extract ordering rules between characters:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"wrt" vs "wrf"  →  t comes before f  (t → f)
+"wrf" vs "er"   →  w comes before e  (w → e)
+"er"  vs "ett"  →  r comes before t  (r → t)
+"ett" vs "rftt" →  e comes before r  (e → r)
+</code></pre></div></div>
+
+<p>This gives us a <strong>directed graph</strong> where an edge <code class="language-plaintext highlighter-rouge">u → v</code> means character <code class="language-plaintext highlighter-rouge">u</code> must come before <code class="language-plaintext highlighter-rouge">v</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>w → e → r → t → f
+</code></pre></div></div>
+
+<h3 id="why-post-order-dfs">Why Post-order DFS?</h3>
+
+<p>We need a <strong>topological ordering</strong> — an order where every node appears before the nodes it points to.</p>
+
+<p>Post-order DFS gives us exactly this, in reverse:</p>
+
+<ul>
+  <li>When we finish DFS on a node, all nodes reachable from it have already been visited and added to the result.</li>
+  <li>So the node we just finished must come <strong>before</strong> all of them in the final order.</li>
+  <li>Reversing the post-order result gives a valid topological sort.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">Character</span><span class="o">,</span> <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">Character</span><span class="o">&gt;&gt;</span> <span class="n">adj</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">Character</span><span class="o">,</span> <span class="nc">Boolean</span><span class="o">&gt;</span> <span class="n">visited</span><span class="o">;</span> <span class="c1">// true = visiting, false = visited</span>
+    <span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Character</span><span class="o">&gt;</span> <span class="n">result</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">alienOrder</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">words</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
+        <span class="n">visited</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+
+        <span class="c1">// Initialize adjacency list with all unique characters</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">word</span> <span class="o">:</span> <span class="n">words</span><span class="o">)</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">c</span> <span class="o">:</span> <span class="n">word</span><span class="o">.</span><span class="na">toCharArray</span><span class="o">())</span>
+                <span class="n">adj</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="k">new</span> <span class="nc">HashSet</span><span class="o">&lt;&gt;());</span>
+
+        <span class="c1">// Build graph by comparing adjacent words</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">words</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="nc">String</span> <span class="n">w1</span> <span class="o">=</span> <span class="n">words</span><span class="o">[</span><span class="n">i</span><span class="o">],</span> <span class="n">w2</span> <span class="o">=</span> <span class="n">words</span><span class="o">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">];</span>
+            <span class="kt">int</span> <span class="n">minLen</span> <span class="o">=</span> <span class="nc">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="n">w1</span><span class="o">.</span><span class="na">length</span><span class="o">(),</span> <span class="n">w2</span><span class="o">.</span><span class="na">length</span><span class="o">());</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">w1</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="n">w2</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">w1</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">minLen</span><span class="o">).</span><span class="na">equals</span><span class="o">(</span><span class="n">w2</span><span class="o">))</span>
+                <span class="k">return</span> <span class="s">""</span><span class="o">;</span> <span class="c1">// invalid order</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">minLen</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">w1</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">j</span><span class="o">)</span> <span class="o">!=</span> <span class="n">w2</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">j</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="n">adj</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">w1</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">j</span><span class="o">)).</span><span class="na">add</span><span class="o">(</span><span class="n">w2</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">j</span><span class="o">));</span>
+                    <span class="k">break</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="c1">// Post-order DFS on every node</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">c</span> <span class="o">:</span> <span class="n">adj</span><span class="o">.</span><span class="na">keySet</span><span class="o">())</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">dfs</span><span class="o">(</span><span class="n">c</span><span class="o">))</span> <span class="k">return</span> <span class="s">""</span><span class="o">;</span> <span class="c1">// cycle detected</span>
+
+        <span class="nc">Collections</span><span class="o">.</span><span class="na">reverse</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+        <span class="nc">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">c</span> <span class="o">:</span> <span class="n">result</span><span class="o">)</span> <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">dfs</span><span class="o">(</span><span class="kt">char</span> <span class="n">c</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">visited</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">c</span><span class="o">))</span>
+            <span class="k">return</span> <span class="n">visited</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">c</span><span class="o">);</span> <span class="c1">// true = cycle detected</span>
+
+        <span class="n">visited</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span> <span class="c1">// mark as visiting</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">neighbor</span> <span class="o">:</span> <span class="n">adj</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">c</span><span class="o">))</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">dfs</span><span class="o">(</span><span class="n">neighbor</span><span class="o">))</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+
+        <span class="n">visited</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>  <span class="c1">// mark as visited</span>
+        <span class="n">result</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>          <span class="c1">// post-order: add after all children done</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="why-not-pre-order">Why not Pre-order?</h3>
+
+<p>In pre-order, we add a node <strong>before</strong> exploring its neighbors. But at that point, we don’t yet know if any of its descendants form a cycle, and we haven’t confirmed all dependencies are resolved. Post-order guarantees that by the time we record a node, the full subtree beneath it is clean and complete.</p>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<ul>
+  <li><strong>DFS</strong> explores depth-first, backtracking when stuck.</li>
+  <li><strong>Post-order DFS</strong> records a node only after all its dependencies are resolved.</li>
+  <li>In the <strong>Alien Dictionary</strong> problem, post-order DFS on the character graph gives a reverse topological order — reversing it yields the valid alien alphabet.</li>
+</ul>
+
+<hr />]]></content><author><name>JIA</name></author><category term="DSA" /><category term="Algorithms" /><category term="DFS" /><category term="Graph" /><category term="Topological Sort" /><summary type="html"><![CDATA[What is DFS?]]></summary></entry><entry><title type="html">Bit Operation</title><link href="http://localhost:4000/dsa/BitOperation/" rel="alternate" type="text/html" title="Bit Operation" /><published>2026-01-07T00:00:00+09:00</published><updated>2026-01-07T00:00:00+09:00</updated><id>http://localhost:4000/dsa/BitOperation</id><content type="html" xml:base="http://localhost:4000/dsa/BitOperation/"><![CDATA[<h2 id="bit-operation">Bit Operation</h2>
+
+<h3 id="문제">문제</h3>
+<p>https://leetcode.com/problems/sum-of-two-integers/description/</p>
+
+<h3 id="문제-이해">문제 이해</h3>
+<p>주어진 두개의 integer의 합을 구하되 +, - 오퍼레이터는 사용하지 않는다.</p>
+
+<h3 id="풀이법">풀이법</h3>
+<p>먼저 비트 연산자들에 대한 기본이 필요</p>
+
+<h4 id="자바-비트-연산자">자바 비트 연산자</h4>
+
+<h5 id="1-and-연산자-">1. AND 연산자 (&amp;)</h5>
+<p>두 비트가 모두 1일 때만 1을 반환합니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>  <span class="c1">// 0101</span>
+<span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>  <span class="c1">// 0011</span>
+<span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span><span class="o">;</span>  <span class="c1">// 0001 = 1</span>
+</code></pre></div></div>
+
+<h5 id="2-or-연산자-">2. OR 연산자 (|)</h5>
+<p>두 비트 중 하나라도 1이면 1을 반환합니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>  <span class="c1">// 0101</span>
+<span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>  <span class="c1">// 0011</span>
+<span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">a</span> <span class="o">|</span> <span class="n">b</span><span class="o">;</span>  <span class="c1">// 0111 = 7</span>
+</code></pre></div></div>
+
+<h5 id="3-xor-연산자-">3. XOR 연산자 (^)</h5>
+<p>두 비트가 서로 다를 때 1을 반환합니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>  <span class="c1">// 0101</span>
+<span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>  <span class="c1">// 0011</span>
+<span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">a</span> <span class="o">^</span> <span class="n">b</span><span class="o">;</span>  <span class="c1">// 0110 = 6</span>
+</code></pre></div></div>
+
+<h5 id="4-not-연산자-">4. NOT 연산자 (~)</h5>
+<p>비트를 반전시킵니다 (0 → 1, 1 → 0).</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>  <span class="c1">// 00000000000000000000000000000101</span>
+<span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="o">~</span><span class="n">a</span><span class="o">;</span>  <span class="c1">// 11111111111111111111111111111010 = -6</span>
+</code></pre></div></div>
+
+<h5 id="5-left-shift-">5. Left Shift («)</h5>
+<p>비트를 왼쪽으로 이동시키고, 오른쪽에는 0을 채웁니다.
+왼쪽으로 n만큼 이동하면 2^n을 곱한 효과가 있습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>  <span class="c1">// 0101</span>
+<span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="o">;</span>  <span class="c1">// 1010 = 10 (5 * 2)</span>
+<span class="kt">int</span> <span class="n">result2</span> <span class="o">=</span> <span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="o">;</span>  <span class="c1">// 10100 = 20 (5 * 4)</span>
+</code></pre></div></div>
+
+<h5 id="6-signed-right-shift-">6. Signed Right Shift (»)</h5>
+<p>비트를 오른쪽으로 이동시키고, 왼쪽에는 부호 비트(최상위 비트)를 채웁니다.
+오른쪽으로 n만큼 이동하면 2^n으로 나눈 효과가 있습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">8</span><span class="o">;</span>   <span class="c1">// 1000</span>
+<span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">a</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="o">;</span>  <span class="c1">// 0100 = 4 (8 / 2)</span>
+<span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="mi">8</span><span class="o">;</span>  <span class="c1">// 음수인 경우</span>
+<span class="kt">int</span> <span class="n">result2</span> <span class="o">=</span> <span class="n">b</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="o">;</span>  <span class="c1">// 왼쪽에 1이 채워짐 = -4</span>
+</code></pre></div></div>
+
+<h5 id="7-unsigned-right-shift-">7. Unsigned Right Shift (»&gt;)</h5>
+<p>비트를 오른쪽으로 이동시키고, 왼쪽에는 항상 0을 채웁니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="o">-</span><span class="mi">8</span><span class="o">;</span>
+<span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">a</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span><span class="o">;</span>  <span class="c1">// 왼쪽에 0이 채워짐, 큰 양수가 됨</span>
+</code></pre></div></div>
+
+<h4 id="비트-연산의-주요-활용">비트 연산의 주요 활용</h4>
+
+<p><strong>캐리(Carry)란?</strong>
+덧셈에서 자리올림을 의미합니다. 예를 들어 9 + 1 = 10에서 1의 자리에서 10의 자리로 올라가는 1이 캐리입니다.
+이진수에서는 1 + 1 = 10(이진수)이므로 두 비트가 모두 1일 때 캐리가 발생합니다.</p>
+
+<p><strong>비트 연산으로 덧셈 구현 원리:</strong></p>
+<ol>
+  <li><strong>XOR (^)</strong>: 캐리를 무시하고 각 자리를 더합니다
+    <ul>
+      <li>0 + 0 = 0, 0 + 1 = 1, 1 + 0 = 1, 1 + 1 = 0 (자리올림 발생, 현재 자리는 0)</li>
+    </ul>
+  </li>
+  <li><strong>AND (&amp;)</strong>: 캐리가 발생하는 위치를 찾습니다
+    <ul>
+      <li>두 비트가 모두 1일 때만 캐리 발생</li>
+    </ul>
+  </li>
+  <li><strong>Left Shift («)</strong>: 캐리를 왼쪽으로 한 칸 이동시킵니다
+    <ul>
+      <li>자리올림을 다음 자리로 이동</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>예시: 5 + 3 = 8</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1단계:
+  a = 5 (0101)
+  b = 3 (0011)
+
+  a ^ b = 0110 (캐리 없이 더한 결과)
+  (a &amp; b) &lt;&lt; 1 = (0001) &lt;&lt; 1 = 0010 (캐리)
+
+2단계:
+  a = 6 (0110)
+  b = 2 (0010)
+
+  a ^ b = 0100
+  (a &amp; b) &lt;&lt; 1 = (0010) &lt;&lt; 1 = 0100
+
+3단계:
+  a = 4 (0100)
+  b = 4 (0100)
+
+  a ^ b = 1000
+  (a &amp; b) &lt;&lt; 1 = (0100) &lt;&lt; 1 = 1000
+
+4단계:
+  a = 8 (1000)
+  b = 8 (1000)
+
+  a ^ b = 0000
+  (a &amp; b) &lt;&lt; 1 = (1000) &lt;&lt; 1 = 10000
+
+5단계:
+  a = 0 (0000)
+  b = 16 (10000)
+
+  계속 반복... 최종적으로 b가 0이 되면 종료
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 두 수의 합 구하기 (+ 연산자 없이)</span>
+<span class="kd">public</span> <span class="kt">int</span> <span class="nf">getSum</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">while</span> <span class="o">(</span><span class="n">b</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">carry</span> <span class="o">=</span> <span class="o">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span><span class="o">)</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="o">;</span>  <span class="c1">// 캐리 계산: 두 비트가 모두 1인 위치를 찾아 왼쪽으로 이동</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">^</span> <span class="n">b</span><span class="o">;</span>  <span class="c1">// 캐리 없이 더하기: 각 자리를 XOR로 더함</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">carry</span><span class="o">;</span>  <span class="c1">// 캐리를 b에 저장하고 다음 반복에서 더함</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">a</span><span class="o">;</span>  <span class="c1">// 더 이상 캐리가 없으면 결과 반환</span>
+<span class="o">}</span>
+</code></pre></div></div>]]></content><author><name>JIA</name></author><category term="DSA" /><category term="Computer" /><summary type="html"><![CDATA[Bit Operation]]></summary></entry><entry><title type="html">Kadane’s Algorithms</title><link href="http://localhost:4000/dsa/Kadane'sAlgorithms/" rel="alternate" type="text/html" title="Kadane’s Algorithms" /><published>2026-01-06T00:00:00+09:00</published><updated>2026-01-06T00:00:00+09:00</updated><id>http://localhost:4000/dsa/Kadane&apos;sAlgorithms</id><content type="html" xml:base="http://localhost:4000/dsa/Kadane&apos;sAlgorithms/"><![CDATA[<h2 id="kadanes-algorithms-for-subarray">Kadane’s Algorithms (for subArray)</h2>
+
+<h3 id="문제">문제</h3>
+<p>https://leetcode.com/problems/maximum-product-subarray</p>
+
+<h3 id="문제-이해">문제 이해</h3>
+<p>연속되는 subArray 를 통해 가장 최고의 곱을 구하는 문제</p>
+
+<h3 id="풀이법">풀이법</h3>]]></content><author><name>JIA</name></author><category term="DSA" /><category term="Algorithms" /><summary type="html"><![CDATA[Kadane’s Algorithms (for subArray)]]></summary></entry><entry><title type="html">Longest Common Subsequence</title><link href="http://localhost:4000/dsa/LongestCommonSubsequence/" rel="alternate" type="text/html" title="Longest Common Subsequence" /><published>2026-01-04T00:00:00+09:00</published><updated>2026-01-04T00:00:00+09:00</updated><id>http://localhost:4000/dsa/LongestCommonSubsequence</id><content type="html" xml:base="http://localhost:4000/dsa/LongestCommonSubsequence/"><![CDATA[<h2 id="lcs-longest-common-subsequence">LCS (Longest Common Subsequence)</h2>
+
+<h3 id="문제">문제</h3>
+<p>https://leetcode.com/problems/longest-common-subsequence</p>
+
+<h3 id="문제-이해">문제 이해</h3>
+<p>주어진 텍스트들을 비교하여 공통인 글자들을 나열하여 가장 길게 만들 수 있는 문자열의 길이를 찾아낸다.
+<br />
+아래와 같이 abcde, gfbacfd 라는 문자열이 있는 경우 공통인 글자를 모아 만들 수 있는 가장 긴 문자열은 <strong>bcd</strong> 가 된다.</p>
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a**bcd**e
+gf**b**a**c**f**d**
+=&gt; bcd
+</code></pre></div></div>
+
+<h3 id="풀이법">풀이법</h3>
+<p>가장 효율적으로 풀 수 있는 방법은 DP이다.<br />
+코드를 보면 직관적이지 않으나 아래 그림들을 보고 코드를 보면 이해하기가 훨씬 수월하다.
+<br />
+(하단 그림 첨부 필요)</p>]]></content><author><name>JIA</name></author><category term="DSA" /><category term="Algorithms" /><summary type="html"><![CDATA[LCS (Longest Common Subsequence)]]></summary></entry><entry><title type="html">First Post</title><link href="http://localhost:4000/blog/firstPost/" rel="alternate" type="text/html" title="First Post" /><published>2024-10-15T00:00:00+09:00</published><updated>2024-10-15T00:00:00+09:00</updated><id>http://localhost:4000/blog/firstPost</id><content type="html" xml:base="http://localhost:4000/blog/firstPost/"><![CDATA[<h2 id="first-post">FIRST POST</h2>
+
+<p>What will happen?</p>]]></content><author><name>JIA</name></author><category term="Blog" /><category term="introduction" /><summary type="html"><![CDATA[FIRST POST]]></summary></entry><entry><title type="html">My Blog Introduction</title><link href="http://localhost:4000/blog/my-blog-introduction/" rel="alternate" type="text/html" title="My Blog Introduction" /><published>2024-10-14T00:00:00+09:00</published><updated>2024-10-14T00:00:00+09:00</updated><id>http://localhost:4000/blog/my-blog-introduction</id><content type="html" xml:base="http://localhost:4000/blog/my-blog-introduction/"><![CDATA[<h2 id="first-post">First Post</h2>
+
+<p>What I want to share in this blog is whatever comes to mind.</p>]]></content><author><name>JIA</name></author><category term="Blog" /><category term="introduction" /><summary type="html"><![CDATA[First Post]]></summary></entry></feed>
